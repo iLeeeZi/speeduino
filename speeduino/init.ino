@@ -413,7 +413,7 @@ void initialiseAll()
         channel3IgnDegrees = configPage2.oddfire3;
         }
 
-        //For alternatiing injection, the squirt occurs at different times for each channel
+        //For alternating injection, the squirt occurs at different times for each channel
         if( (configPage2.injLayout == INJ_SEMISEQUENTIAL) || (configPage2.injLayout == INJ_PAIRED) || (configPage2.strokes == TWO_STROKE) )
         {
           channel1InjDegrees = 0;
@@ -480,7 +480,7 @@ void initialiseAll()
           maxIgnOutputs = 4;
         }
 
-        //For alternatiing injection, the squirt occurs at different times for each channel
+        //For alternating injection, the squirt occurs at different times for each channel
         if( (configPage2.injLayout == INJ_SEMISEQUENTIAL) || (configPage2.injLayout == INJ_PAIRED) || (configPage2.strokes == TWO_STROKE) )
         {
           channel2InjDegrees = 180;
@@ -542,7 +542,7 @@ void initialiseAll()
           CRANK_ANGLE_MAX_IGN = 720;
         }
 
-        //For alternatiing injection, the squirt occurs at different times for each channel
+        //For alternating injection, the squirt occurs at different times for each channel
         if( (configPage2.injLayout == INJ_SEMISEQUENTIAL) || (configPage2.injLayout == INJ_PAIRED) || (configPage2.strokes == TWO_STROKE) )
         {
           channel1InjDegrees = 0;
@@ -580,11 +580,8 @@ void initialiseAll()
         break;
     case 6:
         channel1IgnDegrees = 0;
-        channel1InjDegrees = 0;
         channel2IgnDegrees = 120;
-        channel2InjDegrees = 120;
         channel3IgnDegrees = 240;
-        channel3InjDegrees = 240;
         maxIgnOutputs = 3;
 
         //Adjust the injection angles based on the number of squirts
@@ -594,6 +591,20 @@ void initialiseAll()
           channel3InjDegrees = (channel3InjDegrees * 2) / currentStatus.nSquirts;
         }
 
+        //For alternating injection, the squirt occurs at different times for each channel
+        if( (configPage2.injLayout == INJ_SEMISEQUENTIAL) || (configPage2.injLayout == INJ_PAIRED) )
+        {
+          channel1InjDegrees = 0;
+          channel2InjDegrees = 120;
+          channel3InjDegrees = 240;
+          if (!configPage2.injTiming)
+          {
+            //For simultaneous, all squirts happen at the same time
+            channel1InjDegrees = 0;
+            channel2InjDegrees = 0;
+            channel3InjDegrees = 0;
+          }
+        }
     #if INJ_CHANNELS >= 6
         if (configPage2.injLayout == INJ_SEQUENTIAL)
         {
@@ -613,16 +624,6 @@ void initialiseAll()
           req_fuel_uS = req_fuel_uS * 2;
         }
     #endif
-
-        if (!configPage2.injTiming) 
-        { 
-          //For simultaneous, all squirts happen at the same time
-          channel1InjDegrees = 0;
-          channel2InjDegrees = 0;
-          channel3InjDegrees = 0; 
-        } 
-
-        configPage2.injLayout = 0; //This is a failsafe. We can never run semi-sequential with more than 4 cylinders
 
         channel1InjEnabled = true;
         channel2InjEnabled = true;
@@ -676,7 +677,7 @@ void initialiseAll()
           channel4InjDegrees = 0; 
         }
 
-        configPage2.injLayout = 0; //This is a failsafe. We can never run semi-sequential with more than 4 cylinders
+        configPage2.injLayout = 0; //This is a failsafe. We can never run semi-sequential with more than 6 cylinders
 
         channel1InjEnabled = true;
         channel2InjEnabled = true;
@@ -872,10 +873,16 @@ void initialiseAll()
     unsigned long primingValue = table2D_getValue(&PrimingPulseTable, currentStatus.coolant + CALIBRATION_TEMPERATURE_OFFSET);
     if(primingValue > 0)
     {
-      setFuelSchedule1(100, (primingValue * 100 * 5)); //to acheive long enough priming pulses, the values in tuner studio are divided by 0.5 instead of 0.1, so multiplier of 5 is required.
+      setFuelSchedule1(100, (primingValue * 100 * 5)); //to achieve long enough priming pulses, the values in tunerstudio are divided by 0.5 instead of 0.1, so multiplier of 5 is required.
       setFuelSchedule2(100, (primingValue * 100 * 5));
       setFuelSchedule3(100, (primingValue * 100 * 5));
       setFuelSchedule4(100, (primingValue * 100 * 5));
+      #if INJ_CHANNELS >= 5
+      setFuelSchedule5(100, (primingValue * 100 * 5));
+      #endif
+      #if INJ_CHANNELS >= 6
+      setFuelSchedule6(100, (primingValue * 100 * 5));
+      #endif
     }
 
     initialisationComplete = true;
@@ -1005,9 +1012,9 @@ void setPinMapping(byte boardID)
       pinInjector1 = 8; //Output pin injector 1 is on
       pinInjector2 = 9; //Output pin injector 2 is on
       pinInjector3 = 10; //Output pin injector 3 is on
-      pinInjector4 = 11; //Output pin injector 4 is on
-      pinInjector5 = 12; //Output pin injector 5 is on
-      pinInjector6 = 50; //CAUTION: Uses the same as Coil 4 below. 
+      pinInjector4 = 7; //Output pin injector 4 is on
+      pinInjector5 = 6; //Output pin injector 5 is on
+      pinInjector6 = 5; //CAUTION: Uses the same as Coil 4 below. 
       pinCoil1 = 40; //Pin for coil 1
       pinCoil2 = 38; //Pin for coil 2
       pinCoil3 = 52; //Pin for coil 3
@@ -1023,9 +1030,9 @@ void setPinMapping(byte boardID)
       pinBat = A4; //Battery reference voltage pin
       pinDisplayReset = 48; // OLED reset pin
       pinTachOut = 49; //Tacho output pin  (Goes to ULN2803)
-      pinIdle1 = 5; //Single wire idle control
-      pinIdle2 = 6; //2 wire idle control
-      pinBoost = 7; //Boost control
+      pinIdle1 = 25; //Single wire idle control
+      pinIdle2 = 26; //2 wire idle control
+      pinBoost = 27; //Boost control
       pinVVT_1 = 4; //Default VVT output
       pinFuelPump = 45; //Fuel pump output  (Goes to ULN2803)
       pinStepperDir = 16; //Direction pin  for DRV8825 driver
@@ -2049,6 +2056,7 @@ void setPinMapping(byte boardID)
     pinMode(pinInjector3, OUTPUT);
     pinMode(pinInjector4, OUTPUT);
     pinMode(pinInjector5, OUTPUT);
+    pinMode(pinInjector6, OUTPUT);
 
     inj1_pin_port = portOutputRegister(digitalPinToPort(pinInjector1));
     inj1_pin_mask = digitalPinToBitMask(pinInjector1);
