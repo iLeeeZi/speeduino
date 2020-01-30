@@ -3,6 +3,18 @@
 #include "globals.h"
 #include "timers.h"
 
+inline void openInjector1and4() { openInjector1(); openInjector4(); }
+inline void closeInjector1and4() { closeInjector1(); closeInjector4(); }
+
+inline void openInjector2and3() { openInjector2(); openInjector3(); }
+inline void closeInjector2and3() { closeInjector2(); closeInjector3(); }
+
+inline void openInjector2and5() { openInjector2(); openInjector5(); }
+inline void closeInjector2and5() { closeInjector2(); closeInjector5(); }
+
+inline void openInjector3and6() { openInjector3(); openInjector6(); }
+inline void closeInjector3and6() { closeInjector3(); closeInjector6(); }
+
 inline void beginCoil1Charge() { digitalWrite(pinCoil1, coilHIGH); tachoOutputFlag = READY; }
 inline void endCoil1Charge() { digitalWrite(pinCoil1, coilLOW); }
 

@@ -614,7 +614,7 @@ struct config2 {
   
   byte idleAdvRPM;
   byte idleAdvTPS;
-  
+
   uint16_t inj5Ang;
   uint16_t inj6Ang;
   

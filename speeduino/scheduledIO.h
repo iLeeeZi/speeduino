@@ -1,6 +1,18 @@
 #ifndef SCHEDULEDIO_H
 #define SCHEDULEDIO_H
 
+inline void openInjector1and4();
+inline void closeInjector1and4();
+
+inline void openInjector2and3();
+inline void closeInjector2and3();
+
+inline void openInjector2and5();
+inline void closeInjector2and5();
+
+inline void openInjector3and6();
+inline void closeInjector3and6();
+
 //If coil inverse is on, set the output low, else set it high
 //#define beginCoil1Charge() { configPage4.IgInv == 1 ? coil1Low(); : coil1High(); } tachoOutputFlag = READY;
 //#define beginCoil2Charge() { configPage4.IgInv == 1 ? coil2Low(); : coil2High(); } tachoOutputFlag = READY;
@@ -91,16 +103,16 @@ void endCoil2and4Charge();
 
 #endif
 
+/*
 #define openInjector1and4() openInjector1(); openInjector4()
 #define closeInjector1and4() closeInjector1(); closeInjector4()
-#define openInjector2and5() openInjector2(); openInjector5()
-#define closeInjector2and5() closeInjector2(); closeInjector5()
-#define openInjector3and6() openInjector3(); openInjector6()
-#define closeInjector3and6() closeInjector3(); closeInjector6()
+#define openInjector2and3() openInjector2(); openInjector3()
+#define closeInjector2and3() closeInjector2(); closeInjector3()
 
 //5 cylinder support doubles up injector 3 as being closese to inj 5 (Crank angle)
 #define openInjector3and5() openInjector3(); openInjector5()
 #define closeInjector3and5() closeInjector3(); closeInjector5()
+*/
 
 #ifndef USE_MC33810
 #define coil1Low() (*ign1_pin_port &= ~(ign1_pin_mask))

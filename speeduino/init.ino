@@ -643,6 +643,7 @@ void initialiseAll()
             channel3InjDegrees = (channel3InjDegrees * 2) / currentStatus.nSquirts;
           }
         }
+
     #if INJ_CHANNELS >= 6
         if (configPage2.injLayout == INJ_SEQUENTIAL)
         {
@@ -662,7 +663,7 @@ void initialiseAll()
           req_fuel_uS = req_fuel_uS * 2;
         }
     #else 
-        configPage2.injLayout = 0; //This is a failsafe. We can never run semi-sequential with more than 4 cylinders
+        configPage2.injLayout = 0; //This is a failsafe. We can never run semi-sequential with more than 6 cylinders
     #endif
 
         channel1InjEnabled = true;
@@ -705,7 +706,7 @@ void initialiseAll()
           req_fuel_uS = req_fuel_uS * 2;
         }
     #else
-        configPage2.injLayout = 0; //This is a failsafe. We can never run semi-sequential with more than 4 cylinders
+        configPage2.injLayout = 0; //This is a failsafe. We can never run semi-sequential with more than 6 cylinders
     #endif
 
         maxIgnOutputs = 4;
@@ -742,7 +743,25 @@ void initialiseAll()
     {
       if(configPage2.strokes == FOUR_STROKE) { CRANK_ANGLE_MAX = 720; }
     }
-    
+
+    switch(configPage2.nCylinders)
+    {
+    case 4:
+        openInjectorPair1 = openInjector1and4;
+        closeInjectorPair1 = closeInjector1and4;
+        openInjectorPair2 = openInjector2and3;
+        closeInjectorPair2 = closeInjector2and3;
+        break;
+
+    case 6:
+        openInjectorPair1 = openInjector1and4;
+        closeInjectorPair1 = closeInjector1and4;
+        openInjectorPair2 = openInjector2and5;
+        closeInjectorPair2 = closeInjector2and5;
+        openInjectorPair3 = openInjector3and6;
+        closeInjectorPair3 = closeInjector3and6;
+        break;
+    }
 
     switch(configPage4.sparkMode)
     {
