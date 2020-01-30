@@ -754,6 +754,11 @@ void initialiseAll()
         closeInjectorPair2 = closeInjector2and3;
         break;
 
+    case 5:
+        openInjectorPair3 = openInjector3and5;
+        closeInjectorPair3 = closeInjector3and5;
+        break;
+
     case 6:
         openInjectorPair1 = openInjector1and4;
         closeInjectorPair1 = closeInjector1and4;

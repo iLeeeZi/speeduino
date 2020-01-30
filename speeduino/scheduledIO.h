@@ -10,6 +10,9 @@ inline void closeInjector2and3();
 inline void openInjector2and5();
 inline void closeInjector2and5();
 
+inline void openInjector3and5();
+inline void closeInjector3and5();
+
 inline void openInjector3and6();
 inline void closeInjector3and6();
 

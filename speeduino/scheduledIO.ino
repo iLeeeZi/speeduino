@@ -12,6 +12,9 @@ inline void closeInjector2and3() { closeInjector2(); closeInjector3(); }
 inline void openInjector2and5() { openInjector2(); openInjector5(); }
 inline void closeInjector2and5() { closeInjector2(); closeInjector5(); }
 
+inline void openInjector3and5() { openInjector3(); openInjector5(); }
+inline void closeInjector3and5() { closeInjector3(); closeInjector5(); }
+
 inline void openInjector3and6() { openInjector3(); openInjector6(); }
 inline void closeInjector3and6() { closeInjector3(); closeInjector6(); }
 
