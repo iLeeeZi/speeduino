@@ -10,8 +10,8 @@
   #define LED_BUILTIN 13
   #define CORE_AVR
   #define BOARD_H "board_avr2560.h"
-  #define INJ_CHANNELS 6
-  #define IGN_CHANNELS 3
+  #define INJ_CHANNELS 4
+  #define IGN_CHANNELS 5
 
   //#define TIMER5_MICROS
 
@@ -615,6 +615,7 @@ struct config2 {
   byte idleAdvRPM;
   byte idleAdvTPS;
 
+// These might be better to be at the same place as the first four but for now they are here
   uint16_t inj5Ang;
   uint16_t inj6Ang;
   
