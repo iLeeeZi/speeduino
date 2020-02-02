@@ -220,6 +220,11 @@ void oneMSInterval() //Most ARM chips can simply call a function
 
     }
 
+    if(configPage2.vssEnabled == true)
+    {
+      if(vssCounter == 0) { currentStatus.VSS = 0; } // if no pulse happens after a second this will drop vehicle speed to zero. This needs to be changed
+      vssCounter = 0;
+    }
   }
 #if defined(CORE_AVR) //AVR chips use the ISR for this
     //Reset Timer2 to trigger in another ~1ms

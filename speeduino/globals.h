@@ -462,6 +462,7 @@ struct statuses {
   unsigned int clutchEngagedRPM; /**< The RPM at which the clutch was last depressed. Used for distinguishing between launch control and flat shift */ 
   bool flatShiftingHard;
   volatile uint32_t startRevolutions; /**< A counter for how many revolutions have been completed since sync was achieved. */
+  volatile uint16_t VSS;
   uint16_t boostTarget;
   byte testOutputs;
   bool testActive;
@@ -504,7 +505,9 @@ struct config2 {
   byte unused2_2;  //Was ASE
   byte aeMode : 2; /**< Acceleration Enrichment mode. 0 = TPS, 1 = MAP. Values 2 and 3 reserved for potential future use (ie blended TPS / MAP) */
   byte battVCorMode : 1;
-  byte unused1_3c : 5;
+  byte vssEnabled : 1;
+  byte vssMode : 2;
+  byte unused1_3c : 2;
   byte wueValues[10]; //Warm up enrichment array (10 bytes)
   byte crankingPct; //Cranking enrichment
   byte pinMapping; // The board / ping mapping to be used
@@ -614,7 +617,9 @@ struct config2 {
   
   byte idleAdvRPM;
   byte idleAdvTPS;
-  byte unused2_95[33];
+
+  uint16_t vssPulses;
+  byte unused2_97[31];
 
 #if defined(CORE_AVR)
   };
@@ -702,7 +707,9 @@ struct config4 {
   byte idleAdvBins[6];
   byte idleAdvValues[6];
 
-  byte unused4_120[8];
+  byte FILTER_VSS;
+
+  byte unused4_121[7];
 
 #if defined(CORE_AVR)
   };
@@ -1064,6 +1071,7 @@ extern byte pinIgnBypass; //The pin used for an ignition bypass (Optional)
 extern byte pinFlex; //Pin with the flex sensor attached
 extern byte pinBaro; //Pin that an external barometric pressure sensor is attached to (If used)
 extern byte pinResetControl; // Output pin used control resetting the Arduino
+extern byte pinVSS; //Pin connected to the vss signal
 #ifdef USE_MC33810
   //If the MC33810 IC\s are in use, these are the chip select pins
   byte pinMC33810_1_CS;

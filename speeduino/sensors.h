@@ -28,6 +28,11 @@
 */
 
 volatile byte flexCounter = 0;
+
+volatile byte vssCounter = 0;
+volatile unsigned long vssRising;
+volatile unsigned long vssPeriod;
+
 volatile byte knockCounter = 0;
 volatile uint16_t knockAngle;
 
@@ -60,6 +65,8 @@ static inline void readMAP() __attribute__((always_inline));
 void initialiseADC();
 void readTPS();
 void readO2_2();
+void readVSS();
+void vssPulse();
 void flexPulse();
 uint16_t readAuxanalog(uint8_t analogPin);
 uint16_t readAuxdigital(uint8_t digitalPin);

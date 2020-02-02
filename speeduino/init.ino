@@ -270,6 +270,12 @@ void initialiseAll()
     currentStatus.ethanolPct = 0;
     }
 
+    //Check whether the vehicle speed sensor is enabled and if so, attach an interrupt for it
+    if(configPage2.vssEnabled > 0)
+    {
+    attachInterrupt(digitalPinToInterrupt(pinVSS), vssPulse, RISING);
+    currentStatus.VSS = 0;
+    }
     //Once the configs have been loaded, a number of one time calculations can be completed
     req_fuel_uS = configPage2.reqFuel * 100; //Convert to uS and an int. This is the only variable to be used in calculations
     inj_opentime_uS = configPage2.injOpen * 100; //Injector open time. Comes through as ms*10 (Eg 15.5ms = 155).
@@ -2231,6 +2237,10 @@ void setPinMapping(byte boardID)
   if(configPage2.flexEnabled > 0)
   {
     pinMode(pinFlex, INPUT); //Standard GM / Continental flex sensor requires pullup, but this should be onboard. The internal pullup will not work (Requires ~3.3k)!
+  }
+  if(configPage2.vssEnabled > 0)
+  {
+    pinMode(pinVSS, INPUT_PULLUP); //VSS uses the internal pullup for now
   }
   if(configPage6.launchEnabled > 0)
   {

@@ -115,6 +115,7 @@ void initialiseADC()
   if(configPage4.ADCFILTER_BAT > 240) { configPage4.ADCFILTER_BAT = 128; writeConfig(ignSetPage); }
   if(configPage4.ADCFILTER_MAP > 240) { configPage4.ADCFILTER_MAP = 20;  writeConfig(ignSetPage); }
   if(configPage4.ADCFILTER_BARO > 240) { configPage4.ADCFILTER_BARO = 64; writeConfig(ignSetPage); }
+  if(configPage4.FILTER_VSS > 240) { configPage4.FILTER_VSS = 64; writeConfig(ignSetPage); }
 
 }
 
@@ -482,6 +483,26 @@ void readBat()
   }
 
   currentStatus.battery10 = ADC_FILTER(tempReading, configPage4.ADCFILTER_BAT, currentStatus.battery10);
+}
+
+void readVSS()
+{
+  if(configPage2.vssEnabled > 0 && (vssCounter > 0))
+  {
+    int32_t tempVSS = (1000000L / vssPeriod);
+    tempVSS = ((tempVSS * 3600L) / configPage2.vssPulses);
+
+    if (tempVSS > 400) { tempVSS = 400; }
+    else if (tempVSS < 0) { tempVSS = 0; }
+    currentStatus.VSS = ADC_FILTER(tempVSS, configPage4.FILTER_VSS, currentStatus.VSS);
+  }
+}
+
+void vssPulse()
+{
+  vssPeriod = (micros() - vssRising); //Calculate the pulse duration
+  vssRising = micros(); //Start pulse duration measurement.
+  ++vssCounter;
 }
 
 /*

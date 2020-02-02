@@ -22,8 +22,8 @@ void createLog(uint8_t *logBuffer)
     logBuffer[14] = lowByte(currentStatus.RPM); //rpm HB
     logBuffer[15] = highByte(currentStatus.RPM); //rpm LB
     logBuffer[16] = (byte)(currentStatus.AEamount >> 1); //TPS acceleration enrichment (%) divided by 2 (Can exceed 255)
-    logBuffer[17] = currentStatus.corrections; //Total GammaE (%)
-    logBuffer[18] = currentStatus.VE; //Current VE (%). Can be equal to VE1 or VE2 or a calculated value from both of them
+    logBuffer[17] = lowByte(currentStatus.corrections); //Total GammaE (%)
+    logBuffer[18] = highByte(currentStatus.corrections); //Total GammaE (%)
     logBuffer[19] = currentStatus.VE1; //VE 1 (%)
     logBuffer[20] = currentStatus.VE2; //VE 2 (%)
     logBuffer[21] = currentStatus.afrTarget;
@@ -120,4 +120,7 @@ void createLog(uint8_t *logBuffer)
     logBuffer[96] = lowByte(currentStatus.flexBoostCorrection);
     logBuffer[97] = highByte(currentStatus.flexBoostCorrection);
     logBuffer[98] = currentStatus.baroCorrection;
+    logBuffer[99] = currentStatus.VE; //Current VE (%). Can be equal to VE1 or VE2 or a calculated value from both of them
+    logBuffer[100] = lowByte(currentStatus.VSS);
+    logBuffer[101] = highByte(currentStatus.VSS);
 }
