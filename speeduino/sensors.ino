@@ -487,12 +487,17 @@ void readBat()
 
 void readVSS()
 {
-  if(configPage2.vssEnabled > 0 && (vssCounter > 0))
+  if( (millis() - (vssRisingEdge / 1000UL)) > (3600000UL / configPage2.vssPulses) ) 
   {
-    int32_t tempVSS = (1000000L / vssPeriod);
-    tempVSS = ((tempVSS * 3600L) / configPage2.vssPulses);
+    currentStatus.VSS = 0;
+  }
+  else
+  {
+    int32_t tempVSS = (((1000000L / vssPeriod) * 3600) / configPage2.vssPulses);
 
-    if (tempVSS > 400) { tempVSS = 400; }
+    if(configPage2.vssMode == 1) { tempVSS = ((tempVSS * 1000) / 621); } //Convert to use pulses per mile rather than pulses per kilometer. In future should propably use only one speed unit for internal calculations and convert it in tunerstudio etc.
+
+    if (tempVSS > 400) { tempVSS = 400; } // Limit the max speed to 400
     else if (tempVSS < 0) { tempVSS = 0; }
     currentStatus.VSS = ADC_FILTER(tempVSS, configPage4.FILTER_VSS, currentStatus.VSS);
   }
@@ -500,9 +505,8 @@ void readVSS()
 
 void vssPulse()
 {
-  vssPeriod = (micros() - vssRising); //Calculate the pulse duration
-  vssRising = micros(); //Start pulse duration measurement.
-  ++vssCounter;
+  vssPeriod = (micros() - vssRisingEdge); //Calculate the pulse duration
+  vssRisingEdge = micros(); //Start pulse duration measurement.
 }
 
 /*

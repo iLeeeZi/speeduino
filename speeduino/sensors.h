@@ -29,8 +29,7 @@
 
 volatile byte flexCounter = 0;
 
-volatile byte vssCounter = 0;
-volatile unsigned long vssRising;
+volatile unsigned long vssRisingEdge;
 volatile unsigned long vssPeriod;
 
 volatile byte knockCounter = 0;
