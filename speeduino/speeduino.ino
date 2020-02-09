@@ -150,7 +150,6 @@ void loop()
     {
       BIT_CLEAR(TIMER_mask, BIT_TIMER_15HZ);
       readTPS(); //TPS reading to be performed every 32 loops (any faster and it can upset the TPSdot sampling time)
-      if(configPage2.vssEnabled == 1) { readVSS(); } //Read vehicle speed
       #if  defined(CORE_TEENSY)       
           if (configPage9.enable_intcan == 1) // use internal can module
           {
@@ -221,6 +220,7 @@ void loop()
     if(BIT_CHECK(LOOP_TIMER, BIT_TIMER_30HZ)) //30 hertz
     {
       BIT_CLEAR(TIMER_mask, BIT_TIMER_30HZ);
+      if(configPage2.vssEnabled == 1) { readVSS(); } //Read vehicle speed
       //Most boost tends to run at about 30Hz, so placing it here ensures a new target time is fetched frequently enough
       boostControl();
       //VVT may eventually need to be synced with the cam readings (ie run once per cam rev) but for now run at 30Hz

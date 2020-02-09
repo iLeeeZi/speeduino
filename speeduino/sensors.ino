@@ -115,7 +115,7 @@ void initialiseADC()
   if(configPage4.ADCFILTER_BAT > 240) { configPage4.ADCFILTER_BAT = 128; writeConfig(ignSetPage); }
   if(configPage4.ADCFILTER_MAP > 240) { configPage4.ADCFILTER_MAP = 20;  writeConfig(ignSetPage); }
   if(configPage4.ADCFILTER_BARO > 240) { configPage4.ADCFILTER_BARO = 64; writeConfig(ignSetPage); }
-  if(configPage4.FILTER_VSS > 240) { configPage4.FILTER_VSS = 64; writeConfig(ignSetPage); }
+  if(configPage4.FILTER_VSS > 240) { configPage4.FILTER_VSS = 100; writeConfig(ignSetPage); }
 
 }
 
@@ -487,19 +487,20 @@ void readBat()
 
 void readVSS()
 {
-  if( (millis() - (vssRisingEdge / 1000UL)) > (3600000UL / configPage2.vssPulses) ) 
-  {
-    currentStatus.VSS = 0;
-  }
-  else
+  if( ((micros() - vssRisingEdge) / 1000UL) < (3600000UL / configPage2.vssPulses) )
   {
     int32_t tempVSS = (((1000000L / vssPeriod) * 3600) / configPage2.vssPulses);
 
     if(configPage2.vssMode == 1) { tempVSS = ((tempVSS * 1000) / 621); } //Convert to use pulses per mile rather than pulses per kilometer. In future should propably use only one speed unit for internal calculations and convert it in tunerstudio etc.
 
-    if (tempVSS > 400) { tempVSS = 400; } // Limit the max speed to 400
+    if (tempVSS > 400) { tempVSS = 400; } // Limit the max speed to 400km/h
     else if (tempVSS < 0) { tempVSS = 0; }
     currentStatus.VSS = ADC_FILTER(tempVSS, configPage4.FILTER_VSS, currentStatus.VSS);
+  }
+  else // If no pulses received reset speed to zero.
+  {
+    currentStatus.VSS = 0;
+    vssPeriod = 0;
   }
 }
 
