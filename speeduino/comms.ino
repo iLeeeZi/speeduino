@@ -101,6 +101,12 @@ void command()
           if (currentStatus.RPM == 0) { TS_CommandButtonsHandler(cmdCombined); }
           cmdPending = false;
         }
+        else if ( (cmdCombined >= TS_CMD_STM32_REBOOT) && (cmdCombined <= TS_CMD_STM32_BOOTLOADER) )
+        {
+          //STM32 reboot buttons
+          if (currentStatus.RPM == 0) { TS_CommandButtonsHandler(cmdCombined); }
+          cmdPending = false;
+        }
         else if( (cmdCombined >= TS_CMD_VSS_60KMH) && (cmdCombined <= TS_CMD_VSS_RATIO6) )
         {
           //VSS Calibration commands

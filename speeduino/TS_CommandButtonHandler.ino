@@ -265,6 +265,15 @@ uint16_t TS_CommandButtonsHandler(int buttonCommand)
       if(!BIT_CHECK(HWTest_IGN_50pc, 8)) { coil8Low(); } //Ensure this output is turned off (Otherwise the output may stay on permanently)
       break;
 
+    //STM32 Commands
+    case TS_CMD_STM32_REBOOT: // 
+      DoSystemReset();
+      break;
+
+    case TS_CMD_STM32_BOOTLOADER: // 
+      JumpToBootloader();
+      break;
+
     //VSS Calibration routines
     case TS_CMD_VSS_60KMH:
       //Calibrate the actual pulses per distance

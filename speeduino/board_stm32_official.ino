@@ -158,6 +158,47 @@
       return &top - reinterpret_cast<char*>(sbrk(0));
   }
 
+  void DoSystemReset( void )
+  {
+    __disable_irq();
+    NVIC_SystemReset();
+  }
+
+  void JumpToBootloader( void ) // https://github.com/3devo/Arduino_Core_STM32/blob/jumpSysBL/libraries/SrcWrapper/src/stm32/bootloader.c
+  {
+    void (*SysMemBootJump)(void);
+    uint32_t sys = 0;
+    uint32_t sysMem_addr = 0;
+
+    HAL_RCC_DeInit();
+    HAL_DeInit();
+    SysTick->CTRL = SysTick->LOAD = SysTick->VAL = 0;
+    __HAL_RCC_CLEAR_RESET_FLAGS();
+//    __HAL_RCC_SYSCFG_CLK_ENABLE();
+    __HAL_SYSCFG_REMAPMEMORY_SYSTEMFLASH();
+//    __set_MSP(*(uint32_t *)sysMem_addr);
+//    SysMemBootJump = (void (*)(void))(*((uint32_t *)(sysMem_addr + 4)));
+//    __DSB();
+//    __ISB();
+//    SysMemBootJump();
+
+    // This is assembly to prevent modifying the stack pointer after
+    // loading it, and to ensure a jump (not call) to the bootloader.
+    // Not sure if the barriers are really needed, they were taken from
+    // https://github.com/GrumpyOldPizza/arduino-STM32L4/blob/ac659033eadd50cfe001ba1590a1362b2d87bb76/system/STM32L4xx/Source/boot_stm32l4xx.c#L159-L165
+    asm volatile (
+      "ldr r0, [%[sys], #0]   \n\t"  // get address of stack pointer
+      "msr msp, r0            \n\t"  // set stack pointer
+      "ldr r0, [%[sys], #4]   \n\t"  // get address of reset handler
+      "dsb                    \n\t"  // data sync barrier
+      "isb                    \n\t"  // instruction sync barrier
+      "bx r0                  \n\t"  // branch to bootloader
+      : : [sys] "l" (sysMem_addr) : "r0"
+    );
+
+    __builtin_unreachable();
+  }
+
     /*
   ***********************************************************************************************************
   * Interrupt callback functions
